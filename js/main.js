@@ -67,7 +67,7 @@ function example2() {
     .attr('height', dims.width)
     .attr('width', dims.width)
     .attr('fill', 'red')
-    .attr('transform', 'rotate(0, ' + (dims.x+dims.width/2) + ','+ (dims.y+dims.width/2) +')')
+    .attr('transform', 'rotate(0, ' + (dims.x + dims.width / 2) + ', ' + (dims.y + dims.width / 2) + ')')
     .attr('x', dims.x)
     .attr('y', dims.y);
 
@@ -78,7 +78,7 @@ function example2() {
       .transition()
       .duration(10000)
       .attrTween('transform', function rotateObject() {
-        return d3.interpolateString('rotate(0, '+ (dims.x+dims.width/2) + ','+ (dims.y+dims.width/2) +')', 'rotate(360, '+ (dims.x+dims.width/2) + ','+ (dims.y+dims.width/2) +')');
+        return d3.interpolateString('rotate(0, '+ (dims.x + dims.width / 2) + ', ' + (dims.y + dims.width / 2) +')', 'rotate(360, '+ (dims.x + dims.width / 2) + ', ' + (dims.y + dims.width / 2) + ')');
       })
       .ease('linear')
       .each('end', rotateInfinite);
@@ -86,6 +86,71 @@ function example2() {
   
 }
 
+function example3() {
+
+  var h = 500;
+  var w = 500;
+
+  var dims = {
+      width: w / 2,
+      x: 200,
+      y: 200,
+      r: w / 4
+  };
+
+  var svgContainer = d3.select('#d3-animation--3').append('svg')
+    .attr('width', w)
+    .attr('height', h);
+
+
+  var wheelContainer = svgContainer.append('g')
+    .attr('transform', 'translate(0, 0)');
+
+  var wheel = wheelContainer.append('circle')
+    .attr('fill', 'red')
+    .attr('cx', dims.x)
+    .attr('cy', dims.y)
+    .attr('r', dims.r);
+
+  var innerWheel = wheelContainer.append('circle')
+    .attr('fill', 'white')
+    .attr('cx', dims.x)
+    .attr('cy', dims.y)
+    .attr('r', dims.r - 5);
+
+  appendCars();
+
+  function appendCars() {
+    for (var i = 0; i < 108; i++) {
+      if (i % 3 !== 1) {
+        continue;
+      }
+      wheelContainer.append('circle')
+        .attr('height', 10)
+        .attr('width', 10)
+        .attr('r', 5)
+        .attr('fill', 'orange')
+        .attr('cx', dims.x + (Math.cos(i * 10) * dims.r))
+        .attr('cy', dims.y + (Math.sin(i * 10) * dims.r));
+    }
+    
+  }
+
+  wheel.each(rotateInfinite);
+
+  function rotateInfinite() {
+    wheelContainer
+      .transition()
+      .duration(30000)
+      .attrTween('transform', function rotateObject() {
+        return d3.interpolateString('rotate(0, '+ dims.x + ', ' + dims.y +')', 'rotate(360, '+ dims.x + ', ' + dims.y + ')');
+      })
+      .ease('linear')
+      .each('end', rotateInfinite);
+  }
+
+}
 
 example1();
 example2();
+example3();
